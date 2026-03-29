@@ -87,7 +87,11 @@ def _fetch_transcript_data(video_id, use_cookies=True):
     return fetched.to_raw_data(), transcript_obj.language, transcript_obj.is_generated
 
 
-@app.route('/get_transcript', methods=['GET'])
+@app.route('/api/ping', methods=['GET'])
+def ping():
+    return jsonify({"success": True, "message": "Pong! ClueTube API is alive."}), 200
+
+@app.route('/api/get_transcript', methods=['GET'])
 def get_transcript():
     video_id = request.args.get('videoId')
     
@@ -163,7 +167,7 @@ def get_transcript():
         
         return jsonify({"success": False, "error": f"API Error: {error_type}: {error_msg[:200]}"}), 500
 
-@app.route('/get_comments', methods=['GET'])
+@app.route('/api/get_comments', methods=['GET'])
 def get_comments():
     """Fetch top-level YouTube comments for sentiment analysis."""
     video_id = request.args.get('videoId')
