@@ -95,7 +95,11 @@ def _fetch_transcript_data(video_id, use_cookies=True):
 
 @app.route('/api/ping', methods=['GET'])
 def ping():
-    return jsonify({"success": True, "message": "Pong! ClueTube API is alive."}), 200
+    return jsonify({
+        "success": True, 
+        "message": "Pong! ClueTube API is alive.",
+        "version": API_VERSION
+    }), 200
 
 @app.route('/api/get_transcript', methods=['GET'])
 def get_transcript():
