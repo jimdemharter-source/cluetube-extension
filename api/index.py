@@ -12,13 +12,18 @@ import requests
 app = Flask(__name__)
 CORS(app)  # Allows Chrome Extension to talk to this server
 
-# Cookie file path (Netscape/Mozilla format) - optional but helps avoid blocks
-# Note: Vercel includes this in the deployment if it's in the project root
-COOKIES_FILE = "cookies.txt"
+# Try to find cookies.txt in multiple locations
+POSSIBLE_COOKIE_PATHS = [
+    os.path.join(os.getcwd(), "cookies.txt"),
+    os.path.join(os.path.dirname(__file__), "cookies.txt"),
+    os.path.join(os.path.dirname(__file__), "..", "cookies.txt")
+]
 
-# YouTube Data API for comments
-# Recommendation: Set this as an environment variable in the Vercel dashboard
-YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY", "AIzaSyB2yuuV1GtW7Lf15m2Y4YRr02nN4qDVea4")
+COOKIES_FILE = None
+for p in POSSIBLE_COOKIE_PATHS:
+    if os.path.exists(p):
+        COOKIES_FILE = p
+        break
 
 def create_session_with_cookies():
     """Create a requests session with cookies if available."""
@@ -30,7 +35,7 @@ def create_session_with_cookies():
         'Accept-Language': 'en-US,en;q=0.9',
     })
     
-    if os.path.exists(COOKIES_FILE):
+    if COOKIES_FILE:
         try:
             cj = MozillaCookieJar(COOKIES_FILE)
             cj.load(ignore_discard=True, ignore_expires=True)
@@ -43,14 +48,18 @@ def create_session_with_cookies():
 
 def _fetch_transcript_data(video_id, use_cookies=True):
     """Core transcript fetching logic. Returns (transcript_data, language, is_generated) or raises."""
-    if use_cookies and os.path.exists(COOKIES_FILE):
+    if use_cookies and COOKIES_FILE:
         session = create_session_with_cookies()
         api = YouTubeTranscriptApi(http_client=session)
     else:
         api = YouTubeTranscriptApi()
     
-    # List available transcripts
-    transcript_list = api.list(video_id)
+    try:
+        # List available transcripts
+        transcript_list = api.list(video_id)
+    except Exception as e:
+        # Wrap the original error with more context
+        raise Exception(f"YouTube List API failed: {str(e)}")
     
     # Try to get any transcript (manual first, then auto-generated)
     transcript_obj = None
@@ -152,7 +161,7 @@ def get_transcript():
         if 'too many requests' in error_msg.lower() or 'blocked' in error_msg.lower():
             return jsonify({"success": False, "error": "Rate limited. Try again in a minute."}), 429
         
-        return jsonify({"success": False, "error": f"Error: {error_msg[:150]}"}), 500
+        return jsonify({"success": False, "error": f"API Error: {error_type}: {error_msg[:200]}"}), 500
 
 @app.route('/get_comments', methods=['GET'])
 def get_comments():
