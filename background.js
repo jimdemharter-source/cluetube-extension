@@ -4,7 +4,123 @@
 const PYTHON_SERVER_URL = "https://cluetube-extension.vercel.app";
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
-// ... (Rest of existing background logic)
+const PROVIDERS = {
+  google: {
+    url: (model) => `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+  },
+  alibaba: {
+    // Defaulting to International endpoint
+    url: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+  },
+  openai: {
+    url: "https://api.openai.com/v1/chat/completions",
+  },
+  openrouter: {
+    url: "https://openrouter.ai/api/v1/chat/completions",
+  }
+};
+
+// ============================================
+// CONTEXT MENU SETUP
+// ============================================
+
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    id: 'CLUETUBE-analyze',
+    title: 'Analyze with ClueTube',
+    contexts: ['link'],
+    targetUrlPatterns: [
+      'https://www.youtube.com/watch*',
+      'https://youtube.com/watch*',
+      'https://www.youtube.com/shorts/*',
+      'https://youtu.be/*'
+    ]
+  });
+});
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === 'CLUETUBE-analyze') {
+    const url = info.linkUrl;
+    const videoId = extractVideoIdFromUrl(url);
+
+    if (videoId && tab?.id) {
+      chrome.tabs.sendMessage(tab.id, {
+        action: 'analyzeFromContextMenu',
+        videoId: videoId
+      });
+    }
+  }
+});
+
+function extractVideoIdFromUrl(url) {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+// ============================================
+// CORE LOGIC
+// ============================================
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'analyzeTranscript') {
+    handleAnalysis(request.data).then(sendResponse);
+    return true; // Keep channel open for async response
+  }
+  if (request.action === 'getTranscript') {
+    // Return raw transcript for Deep Dive feature
+    fetchTranscriptFromPython(request.videoId).then(sendResponse);
+    return true;
+  }
+  if (request.action === 'getSettings') {
+    getSettings().then(sendResponse);
+    return true;
+  }
+  if (request.action === 'clearCache') {
+    chrome.storage.local.clear().then(() => sendResponse({ success: true }));
+    return true;
+  }
+});
+
+async function handleAnalysis({ videoId, title, channel }) {
+  const settings = await getSettings();
+  if (!settings.apiKey) return { success: false, error: 'Configure API Key in settings.' };
+
+  // 1. Check Cache
+  const cached = await getCached(videoId, settings.model);
+  if (cached) return { success: true, data: cached, fromCache: true };
+
+  // 2. Fetch Transcript from PYTHON SERVER
+  const transcriptRes = await fetchTranscriptFromPython(videoId);
+  if (!transcriptRes.success) return { success: false, error: transcriptRes.error };
+
+  // 3. AI Analysis ONLY (No Comments)
+  try {
+    const transcriptToUse = transcriptRes.timedTranscript || transcriptRes.transcript;
+
+    // Determine which LLM function to call based on provider
+    const llmCall = settings.provider === 'google'
+      ? callGemini(settings.apiKey, settings.model, title, channel, transcriptToUse)
+      : callOpenAICompatible(settings.provider, settings.apiKey, settings.model, title, channel, transcriptToUse);
+
+    const analysis = await llmCall;
+
+    await setCache(videoId, analysis, settings.model);
+    return { success: true, data: analysis, fromCache: false };
+  } catch (e) {
+    return { success: false, error: "AI Error: " + e.message };
+  }
+}
+
+// ============================================
+// PYTHON SERVER CONNECTION
+// ============================================
 
 async function fetchTranscriptFromPython(videoId) {
   try {
