@@ -1,0 +1,510 @@
+﻿/* CLUETUBE Content Script Styles */
+
+/* ============================================
+   CHECK BUTTON
+   ============================================ */
+
+.CLUETUBE-check-btn {
+  position: absolute !important;
+  top: 8px !important;
+  left: 8px !important;
+  z-index: 999999 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px;
+
+  padding: 6px 10px !important;
+  border: none !important;
+  border-radius: 4px !important;
+
+  background: rgba(33, 150, 243, 0.95) !important;
+  color: #fff !important;
+  font-family: 'Roboto', Arial, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+
+  cursor: pointer !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* Make it more visible */
+.CLUETUBE-check-btn:hover {
+  background: rgba(25, 118, 210, 1) !important;
+  transform: scale(1.05);
+}
+
+.CLUETUBE-check-btn:active {
+  transform: scale(0.98);
+}
+
+.CLUETUBE-check-btn svg {
+  flex-shrink: 0;
+}
+
+/* ============================================
+   VERDICT OVERLAY
+   ============================================ */
+
+.CLUETUBE-verdict-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.CLUETUBE-verdict-card {
+  position: relative;
+  width: 96%;
+  max-width: 680px;
+  padding: 28px 32px;
+  border-radius: 16px;
+
+  background: #1c1c1c;
+  color: #fff;
+  font-family: 'Roboto', Arial, sans-serif;
+
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.7);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Close button - positioned top right */
+.CLUETUBE-verdict-card>.CLUETUBE-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+/* Video info section with thumbnail and title */
+.CLUETUBE-video-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Clickable video link */
+.CLUETUBE-video-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.CLUETUBE-video-link:hover {
+  transform: scale(1.02);
+}
+
+.CLUETUBE-video-link:hover .CLUETUBE-video-title {
+  color: #3ea6ff;
+}
+
+.CLUETUBE-thumbnail {
+  width: 210px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.CLUETUBE-video-title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #fff;
+  transition: color 0.2s ease;
+}
+
+/* Keypoint links */
+.CLUETUBE-keypoint-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  transition: color 0.2s ease;
+}
+
+.CLUETUBE-keypoint-link:hover {
+  color: #3ea6ff;
+}
+
+.CLUETUBE-keypoint-text {
+  flex: 1;
+}
+
+.CLUETUBE-timestamp {
+  font-size: 13px;
+  color: #3ea6ff;
+  opacity: 0.8;
+}
+
+/* ============================================
+   VERDICT HEADER
+   ============================================ */
+
+.CLUETUBE-verdict-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.CLUETUBE-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.CLUETUBE-verdict-emoji {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.CLUETUBE-verdict-label {
+  font-size: 14px;
+  font-weight: 600;
+  flex-grow: 1;
+}
+
+.CLUETUBE-cached {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.CLUETUBE-close-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  z-index: 10;
+}
+
+.CLUETUBE-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+/* ============================================
+   VERDICT CONTENT
+   ============================================ */
+
+.CLUETUBE-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.CLUETUBE-clickbait-reason {
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.CLUETUBE-summary {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #fff;
+  margin-bottom: 18px;
+}
+
+.CLUETUBE-keypoints {
+  margin-top: 0;
+}
+
+.CLUETUBE-keypoints ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 17px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.CLUETUBE-keypoints li {
+  margin-bottom: 14px;
+  padding-left: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.CLUETUBE-keypoints li:last-child {
+  margin-bottom: 0;
+}
+
+.CLUETUBE-bullet-emoji {
+  font-size: 20px;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.CLUETUBE-no-points {
+  color: #888;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.CLUETUBE-cache-badge {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-left: 5px;
+}
+
+/* ============================================
+   CONCLUSION SECTION
+   ============================================ */
+
+.CLUETUBE-conclusion {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.CLUETUBE-conclusion-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.CLUETUBE-sentiment-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.CLUETUBE-sentiment-bullish {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+.CLUETUBE-sentiment-bearish {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+  border: 1px solid rgba(244, 67, 54, 0.4);
+}
+
+.CLUETUBE-sentiment-neutral {
+  background: rgba(158, 158, 158, 0.2);
+  color: #9e9e9e;
+  border: 1px solid rgba(158, 158, 158, 0.4);
+}
+
+.CLUETUBE-sentiment-mixed {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+  border: 1px solid rgba(255, 152, 0, 0.4);
+}
+
+.CLUETUBE-sentiment-educational {
+  background: rgba(33, 150, 243, 0.2);
+  color: #2196f3;
+  border: 1px solid rgba(33, 150, 243, 0.4);
+}
+
+.CLUETUBE-conclusion-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.CLUETUBE-verdict-summary {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.CLUETUBE-verdict-reasoning {
+  font-size: 11px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+/* ============================================
+   VERDICT VARIANTS
+   ============================================ */
+
+/* Neutral - for LOW and MEDIUM (no color highlight) */
+.CLUETUBE-verdict-neutral {
+  border-left: 3px solid #666;
+}
+
+.CLUETUBE-verdict-neutral .CLUETUBE-verdict-label {
+  color: #aaa;
+}
+
+/* High clickbait - RED warning */
+.CLUETUBE-verdict-high {
+  border-left: 4px solid #f44336;
+}
+
+.CLUETUBE-verdict-high .CLUETUBE-verdict-label {
+  color: #f44336;
+}
+
+/* Warning banner for HIGH clickbait */
+.CLUETUBE-warning-banner {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  padding: 12px 16px;
+  margin: -20px -24px 16px -24px;
+  border-radius: 12px 12px 0 0;
+  letter-spacing: 0.5px;
+}
+
+/* Legacy classes for backwards compatibility */
+.CLUETUBE-verdict-low {
+  border-left: 3px solid #666;
+}
+
+.CLUETUBE-verdict-low .CLUETUBE-verdict-label {
+  color: #aaa;
+}
+
+.CLUETUBE-verdict-medium {
+  border-left: 3px solid #666;
+}
+
+.CLUETUBE-verdict-medium .CLUETUBE-verdict-label {
+  color: #aaa;
+}
+
+.CLUETUBE-verdict-error {
+  border-left: 3px solid #9e9e9e;
+}
+
+.CLUETUBE-verdict-error .CLUETUBE-verdict-label {
+  color: #9e9e9e;
+}
+
+/* ============================================
+   LOADING STATE
+   ============================================ */
+
+.CLUETUBE-verdict-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border-left: 3px solid #2196f3;
+}
+
+.CLUETUBE-loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #2196f3;
+  border-radius: 50%;
+  animation: CLUETUBE-spin 0.8s linear infinite;
+}
+
+@keyframes CLUETUBE-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.CLUETUBE-loading-text {
+  margin-top: 12px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+/* Smaller thumbnails (sidebar, compact view) */
+ytd-compact-video-renderer .CLUETUBE-check-btn {
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+ytd-compact-video-renderer .CLUETUBE-verdict-card {
+  max-width: 220px;
+  padding: 10px;
+}
+
+ytd-compact-video-renderer .CLUETUBE-verdict-summary {
+  font-size: 11px;
+}
+
+ytd-compact-video-renderer .CLUETUBE-verdict-reasoning {
+  font-size: 10px;
+}
+
+/* Dark mode support (YouTube's dark mode) */
+html[dark] .CLUETUBE-verdict-card,
+[dark] .CLUETUBE-verdict-card {
+  background: #1a1a1a;
+}
+
+/* Ensure button is visible on all thumbnail types */
+ytd-thumbnail .CLUETUBE-check-btn,
+#thumbnail .CLUETUBE-check-btn,
+ytd-rich-item-renderer .CLUETUBE-check-btn,
+ytd-video-renderer .CLUETUBE-check-btn,
+ytd-compact-video-renderer .CLUETUBE-check-btn {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: flex !important;
+}
+
+ytd-rich-item-renderer:hover .CLUETUBE-check-btn,
+ytd-video-renderer:hover .CLUETUBE-check-btn,
+ytd-grid-video-renderer:hover .CLUETUBE-check-btn {
+  opacity: 1;
+}

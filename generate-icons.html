@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Generate Extension Icons</title>
+</head>
+
+<body style="background:#111;padding:40px;font-family:sans-serif;color:#fff;text-align:center;">
+    <h2>CLUETUBE Extension Logo</h2>
+    <p style="color:#888; margin-bottom: 24px;">The icons have been updated automatically. You can right-click each icon
+        and "Save image as..." if needed.</p>
+
+    <div id="icon-container" style="display:flex;gap:32px;align-items:flex-end;justify-content:center;margin:32px 0;">
+        <div style="text-align:center">
+            <img id="c128" width="128" height="128" />
+            <p style="margin-top:12px;font-size:14px;color:#aaa">icon128.png</p>
+        </div>
+        <div style="text-align:center">
+            <img id="c48" width="48" height="48" />
+            <p style="margin-top:12px;font-size:14px;color:#aaa">icon48.png</p>
+        </div>
+        <div style="text-align:center">
+            <img id="c16" width="16" height="16" />
+            <p style="margin-top:12px;font-size:14px;color:#aaa">icon16.png</p>
+        </div>
+    </div>
+
+    <button id="dl"
+        style="padding:16px 32px;font-size:16px;font-weight:bold;cursor:pointer;background:#3B82F6;color:white;border:none;border-radius:8px;box-shadow:0 4px 14px rgba(59, 130, 246, 0.4);transition:all 0.2s;">
+        ⬇ Download All as PNG
+    </button>
+
+    <script>
+        const svgString = `<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">\n  <defs>\n    <linearGradient id="bgGlow" x1="0" y1="0" x2="1" y2="1">\n      <stop offset="0%" stop-color="#2c2c38"/>\n      <stop offset="100%" stop-color="#14141d"/>\n    </linearGradient>\n    <linearGradient id="eyeStroke" x1="0" y1="0" x2="1" y2="1">\n      <stop offset="0%" stop-color="#60A5FA"/>\n      <stop offset="100%" stop-color="#3B82F6"/>\n    </linearGradient>\n    <radialGradient id="greenGlow" cx="0.5" cy="0.5" r="0.5">\n      <stop offset="0%" stop-color="#4ADE80"/>\n      <stop offset="70%" stop-color="#22C55E"/>\n      <stop offset="100%" stop-color="#166534"/>\n    </radialGradient>\n  </defs>\n  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#bgGlow)"/>\n  <rect x="4" y="4" width="120" height="120" rx="28" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>\n  <path d="M 28 64 Q 64 36 100 64 Q 64 92 28 64 Z" fill="none" stroke="url(#eyeStroke)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>\n  <circle cx="64" cy="64" r="16" fill="url(#greenGlow)"/>\n  <path d="M 58 68 L 54 64 L 50 68 L 58 76 L 76 58 L 72 54 Z" fill="white" opacity="0.95"/>\n</svg>`;
+
+        const svgUrl = 'data:image/svg+xml;base64,' + btoa(svgString);
+
+        function setupImage(id) {
+            const img = document.getElementById(id);
+            img.src = svgUrl;
+        }
+
+        setupImage('c128');
+        setupImage('c48');
+        setupImage('c16');
+
+        document.getElementById('dl').onclick = function () {
+            // Draw to canvas to download as PNG
+            ['c128', 'c48', 'c16'].forEach(id => {
+                const img = document.getElementById(id);
+                const size = parseInt(id.replace('c', ''));
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, size, size);
+
+                const link = document.createElement('a');
+                link.download = 'icon' + size + '.png';
+                // Because we read a data uri image onto the canvas, it shouldn't be tainted
+                try {
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                } catch (e) {
+                    alert('Could not generate PNG. The icons are already automatically exported to the assets directory though!');
+                }
+            });
+        };
+    </script>
+</body>
+
+</html>

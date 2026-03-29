@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extension Logo — Final</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
+
+  :root {
+    --bg: #f7f6f3;
+    --surface: #fff;
+    --border: #e8e6e1;
+    --muted: #999;
+    --accent: #FF3B3B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Mono', monospace;
+    padding: 48px 36px;
+    color: #111;
+  }
+
+  header {
+    margin-bottom: 52px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(22px, 3vw, 34px);
+    letter-spacing: -1px;
+    margin-bottom: 6px;
+  }
+
+  header p { color: var(--muted); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  section { margin-bottom: 56px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    max-width: 640px;
+  }
+
+  .sub-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  /* Sizes */
+  .sizes {
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .size-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .size-tag {
+    font-size: 9px;
+    color: var(--muted);
+  }
+
+  /* Contexts */
+  .contexts {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .ctx {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ctx-label {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ctx-bg-dark { background: #1a1a1a; border-radius: 10px; padding: 12px; }
+  .ctx-bg-yt   { background: #fff; border: 1px solid #e8e6e1; border-radius: 10px; padding: 12px; }
+  .ctx-bg-red  { background: #FF3B3B; border-radius: 10px; padding: 12px; }
+
+  /* Pairing demo */
+  .pairing {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: #1a1a1a;
+    border-radius: 10px;
+    flex-wrap: wrap;
+  }
+
+  .pairing-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(255,255,255,0.12);
+  }
+
+  .pairing-label {
+    font-size: 9px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .btn-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 9px 4px 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .btn-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: #FF3B3B; }
+
+  .btn-chip-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 9.5px;
+    color: white;
+    white-space: nowrap;
+  }
+
+  /* Code block */
+  .code-block {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 20px;
+    overflow-x: auto;
+  }
+
+  .code-block pre {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #ccc;
+    white-space: pre;
+  }
+
+  .kw { color: #FF3B3B; }
+  .at { color: #f9a825; }
+  .vl { color: #a5d6a7; }
+  .cm { color: #555; }
+
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    background: none;
+    border: 1px solid #333;
+    color: #888;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .copy-btn:hover { border-color: #FF3B3B; color: #FF3B3B; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Extension Logo</h1>
+  <p>Matches TL;DR &amp; Scan button style</p>
+</header>
+
+<section>
+  <p class="section-label">All sizes</p>
+  <div class="card">
+
+    <div>
+      <div class="sub-label">128 → 16px</div>
+      <div class="sizes">
+
+        <!-- 128px -->
+        <div class="size-item">
+          <svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="128" height="128" rx="28" fill="#1a1a1a"/>
+            <rect x="1" y="1" width="126" height="126" rx="27" stroke="rgba(255,255,255,0.08)" stroke-width="1" fill="none"/>
+            <!-- red dot top-left anchor -->
+            <circle cx="32" cy="38" r="10" fill="#FF3B3B"/>
+            <!-- 3 content lines -->
+            <rect x="50" y="30" width="48" height="16" rx="8" fill="white"/>
+            <rect x="50" y="56" width="38" height="14" rx="7" fill="white" opacity="0.55"/>
+            <rect x="50" y="80" width="26" height="14" rx="7" fill="white" opacity="0.28"/>
+            <!-- subtle 4th line -->
+            <rect x="32" y="104" width="64" height="10" rx="5" fill="rgba(255,255,255,0.1)"/>
+          </svg>
+          <span class="size-tag">128</span>
+        </div>
+
+        <!-- 64px -->
+        <div class="size-item">
+          <svg width="64" height="64" viewBox="0 0 128 128" fill="none">
+            <rect width="128" height="128" rx="28" fill="#1a1a1a"/>
+            <rect x="1" y="1" width="126" height="126" rx="27" stroke="rgba(255,255,255,0.08)" stroke-width="1" fill="none"/>
+            <circle cx="32" cy="38" r="10" fill="#FF3B3B"/>
+            <rect x="50" y="30" width="48" height="16" rx="8" fill="white"/>
+            <rect x="50" y="56" width="38" height="14" rx="7" fill="white" opacity="0.55"/>
+            <rect x="50" y="80" width="26" height="14" rx="7" fill="white" opacity="0.28"/>
+            <rect x="32" y="104" width="64" height="10" rx="5" fill="rgba(255,255,255,0.1)"/>
+          </svg>
+          <span class="size-tag">64</span>
+        </div>
+
+        <!-- 48px -->
+        <div class="size-item">
+          <svg width="48" height="48" viewBox="0 0 128 128" fill="none">
+            <rect width="128" height="128" rx="28" fill="#1a1a1a"/>
+            <rect x="1" y="1" width="126" height="126" rx="27" stroke="rgba(255,255,255,0.08)" stroke-width="1" fill="none"/>
+            <circle cx="32" cy="38" r="10" fill="#FF3B3B"/>
+            <rect x="50" y="30" width="48" height="16" rx="8" fill="white"/>
+            <rect x="50" y="56" width="38" height="14" rx="7" fill="white" opacity="0.55"/>
+            <rect x="50" y="80" width="26" height="14" rx="7" fill="white" opacity="0.28"/>
+          </svg>
+          <span class="size-tag">48</span>
+        </div>
+
+        <!-- 32px -->
+        <div class="size-item">
+          <svg width="32" height="32" viewBox="0 0 128 128" fill="none">
+            <rect width="128" height="128" rx="28" fill="#1a1a1a"/>
+            <circle cx="32" cy="38" r="10" fill="#FF3B3B"/>
+            <rect x="50" y="30" width="48" height="16" rx="8" fill="white"/>
+            <rect x="50" y="56" width="38" height="14" rx="7" fill="white" opacity="0.55"/>
+            <rect x="50" y="80" width="26" height="14" rx="7" fill="white" opacity="0.28"/>
+          </svg>
+          <span class="size-tag">32</span>
+        </div>
+
+        <!-- 16px -->
+        <div class="size-item">
+          <svg width="16" height="16" viewBox="0 0 128 128" fill="none">
+            <rect width="128" height="128" rx="28" fill="#1a1a1a"/>
+            <circle cx="32" cy="38" r="12" fill="#FF3B3B"/>
+            <rect x="52" y="28" width="52" height="20" rx="10" fill="white"/>
+            <rect x="52" y="58" width="40" height="18" rx="9" fill="white" opacity="0.55"/>
+            <rect x="52" y="86" width="26" height="18" rx="9" fill="white" opacity="0.28"/>
+          </svg>
+          <span class="size-tag">16</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Background contexts -->
+    <div>
+      <div class="sub-label">On different backgrounds</div>
+      <div class="contexts">
+        <div class="ctx">
+          <div class="ctx-bg-dark">
+            <svg width="56" height="56" viewBox="0 0 128 128" fill="none"><rect width="128" height="128" rx="28" fill="#1a1a1a"/><rect x="1" y="1" width="126" height="126" rx="27" stroke="rgba(255,255,255,0.08)" stroke-width="1" fill="none"/><circle cx="32" cy="38" r="10" fill="#FF3B3B"/><rect x="50" y="30" width="48" height="16" rx="8" fill="white"/><rect x="50" y="56" width="38" height="14" rx="7" fill="white" opacity="0.55"/><rect x="50" y="80" width="26" height="14" rx="7" fill="white" opacity="0.28"/></svg>
+          </div>
+          <span class="ctx-label">Dark page</span>
+        </div>
+        <div class="ctx">
+          <div class="ctx-bg-yt">
+            <svg width="56" height="56" viewBox="0 0 128 128" fill="none"><rect width="128" height="128" rx="28" fill="#1a1a1a"/><rect x="1" y="1" width="126" height="126" rx="27" stroke="rgba(255,255,255,0.08)" stroke-width="1" fill="none"/><circle cx="32" cy="38" r="10" fill="#FF3B3B"/><rect x="50" y="30" width="48" height="16" rx="8" fill="white"/><rect x="50" y="56" width="38" height="14" rx="7" fill="white" opacity="0.55"/><rect x="50" y="80" width="26" height="14" rx="7" fill="white" opacity="0.28"/></svg>
+          </div>
+          <span class="ctx-label">YouTube white</span>
+        </div>
+        <div class="ctx">
+          <div class="ctx-bg-red">
+            <svg width="56" height="56" viewBox="0 0 128 128" fill="none"><rect width="128" height="128" rx="28" fill="#1a1a1a"/><rect x="1" y="1" width="126" height="126" rx="27" stroke="rgba(255,255,255,0.08)" stroke-width="1" fill="none"/><circle cx="32" cy="38" r="10" fill="#FF3B3B"/><rect x="50" y="30" width="48" height="16" rx="8" fill="white"/><rect x="50" y="56" width="38" height="14" rx="7" fill="white" opacity="0.55"/><rect x="50" y="80" width="26" height="14" rx="7" fill="white" opacity="0.28"/></svg>
+          </div>
+          <span class="ctx-label">Accent red</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pairing with buttons -->
+    <div>
+      <div class="sub-label">Paired with your buttons</div>
+      <div class="pairing">
+        <!-- logo small -->
+        <svg width="36" height="36" viewBox="0 0 128 128" fill="none"><rect width="128" height="128" rx="28" fill="#1a1a1a"/><circle cx="32" cy="38" r="10" fill="#FF3B3B"/><rect x="50" y="30" width="48" height="16" rx="8" fill="white"/><rect x="50" y="56" width="38" height="14" rx="7" fill="white" opacity="0.55"/><rect x="50" y="80" width="26" height="14" rx="7" fill="white" opacity="0.28"/></svg>
+        <div class="pairing-divider"></div>
+        <div style="display:flex; flex-direction:column; gap:4px">
+          <span class="pairing-label">Your buttons</span>
+          <div style="display:flex; gap:8px">
+            <div class="btn-chip"><div class="btn-chip-dot"></div><span class="btn-chip-text">TL;DR</span></div>
+            <div class="btn-chip"><div class="btn-chip-dot"></div><span class="btn-chip-text">Scan</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SVG Code -->
+    <div>
+      <div class="sub-label">SVG source (128×128)</div>
+      <div class="code-block">
+        <pre id="logo-code"><span class="kw">&lt;svg</span> <span class="at">width</span>=<span class="vl">"128"</span> <span class="at">height</span>=<span class="vl">"128"</span>
+     <span class="at">viewBox</span>=<span class="vl">"0 0 128 128"</span>
+     <span class="at">fill</span>=<span class="vl">"none"</span>
+     <span class="at">xmlns</span>=<span class="vl">"http://www.w3.org/2000/svg"</span><span class="kw">&gt;</span>
+  <span class="cm">&lt;!-- dark background --&gt;</span>
+  <span class="kw">&lt;rect</span> <span class="at">width</span>=<span class="vl">"128"</span> <span class="at">height</span>=<span class="vl">"128"</span> <span class="at">rx</span>=<span class="vl">"28"</span>
+        <span class="at">fill</span>=<span class="vl">"#1a1a1a"</span><span class="kw">/&gt;</span>
+  <span class="cm">&lt;!-- subtle border --&gt;</span>
+  <span class="kw">&lt;rect</span> <span class="at">x</span>=<span class="vl">"1"</span> <span class="at">y</span>=<span class="vl">"1"</span> <span class="at">width</span>=<span class="vl">"126"</span> <span class="at">height</span>=<span class="vl">"126"</span>
+        <span class="at">rx</span>=<span class="vl">"27"</span> <span class="at">stroke</span>=<span class="vl">"rgba(255,255,255,0.08)"</span>
+        <span class="at">stroke-width</span>=<span class="vl">"1"</span> <span class="at">fill</span>=<span class="vl">"none"</span><span class="kw">/&gt;</span>
+  <span class="cm">&lt;!-- red dot — same as button --&gt;</span>
+  <span class="kw">&lt;circle</span> <span class="at">cx</span>=<span class="vl">"32"</span> <span class="at">cy</span>=<span class="vl">"38"</span> <span class="at">r</span>=<span class="vl">"10"</span>
+          <span class="at">fill</span>=<span class="vl">"#FF3B3B"</span><span class="kw">/&gt;</span>
+  <span class="cm">&lt;!-- content lines --&gt;</span>
+  <span class="kw">&lt;rect</span> <span class="at">x</span>=<span class="vl">"50"</span> <span class="at">y</span>=<span class="vl">"30"</span> <span class="at">width</span>=<span class="vl">"48"</span> <span class="at">height</span>=<span class="vl">"16"</span>
+        <span class="at">rx</span>=<span class="vl">"8"</span> <span class="at">fill</span>=<span class="vl">"white"</span><span class="kw">/&gt;</span>
+  <span class="kw">&lt;rect</span> <span class="at">x</span>=<span class="vl">"50"</span> <span class="at">y</span>=<span class="vl">"56"</span> <span class="at">width</span>=<span class="vl">"38"</span> <span class="at">height</span>=<span class="vl">"14"</span>
+        <span class="at">rx</span>=<span class="vl">"7"</span> <span class="at">fill</span>=<span class="vl">"white"</span> <span class="at">opacity</span>=<span class="vl">"0.55"</span><span class="kw">/&gt;</span>
+  <span class="kw">&lt;rect</span> <span class="at">x</span>=<span class="vl">"50"</span> <span class="at">y</span>=<span class="vl">"80"</span> <span class="at">width</span>=<span class="vl">"26"</span> <span class="at">height</span>=<span class="vl">"14"</span>
+        <span class="at">rx</span>=<span class="vl">"7"</span> <span class="at">fill</span>=<span class="vl">"white"</span> <span class="at">opacity</span>=<span class="vl">"0.28"</span><span class="kw">/&gt;</span>
+  <span class="cm">&lt;!-- footer line --&gt;</span>
+  <span class="kw">&lt;rect</span> <span class="at">x</span>=<span class="vl">"32"</span> <span class="at">y</span>=<span class="vl">"104"</span> <span class="at">width</span>=<span class="vl">"64"</span> <span class="at">height</span>=<span class="vl">"10"</span>
+        <span class="at">rx</span>=<span class="vl">"5"</span> <span class="at">fill</span>=<span class="vl">"rgba(255,255,255,0.1)"</span><span class="kw">/&gt;</span>
+<span class="kw">&lt;/svg&gt;</span></pre>
+        <button class="copy-btn" onclick="copyCode('logo-code', this)">⌘ Copy SVG</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  function copyCode(id, btn) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Copied!';
+      btn.style.color = '#4caf50';
+      btn.style.borderColor = '#4caf50';
+      setTimeout(() => {
+        btn.textContent = '⌘ Copy SVG';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 1800);
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClueTube | YouTube Clickbait Detector & AI Summariser</title>
+    <meta name="description" content="Unlock the clues hidden in any YouTube video before you press play. Detect clickbait, get key takeaways, and save time with AI.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-deep: #050508;
+            --bg-card: rgba(26, 26, 36, 0.7);
+            --bg-card-hover: rgba(36, 36, 50, 0.8);
+            --accent: #3ea6ff;
+            --accent-glow: rgba(62, 166, 255, 0.4);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.4);
+            --border: rgba(255, 255, 255, 0.08);
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --nav-bg: rgba(5, 5, 8, 0.8);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+        }
+
+        /* --- Background Animation --- */
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 40vw;
+            height: 40vw;
+            background: var(--accent);
+            top: -10vw;
+            right: -10vw;
+        }
+
+        .orb-2 {
+            width: 30vw;
+            height: 30vw;
+            background: #7c3aed;
+            bottom: -5vw;
+            left: -5vw;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(3vw, 5vh) scale(1.1); }
+            66% { transform: translate(-2vw, 3vh) scale(0.9); }
+        }
+
+        /* --- Navbar --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 20px 0;
+            backdrop-filter: blur(12px);
+            background: var(--nav-bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 24px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 15px;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .btn-download {
+            background: var(--accent);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 99px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--accent-glow);
+            background: #4ab1ff;
+        }
+
+        /* --- Hero --- */
+        .hero {
+            padding: 180px 0 100px;
+            text-align: center;
+            position: relative;
+        }
+
+        .badge {
+            background: rgba(62, 166, 255, 0.1);
+            color: var(--accent);
+            padding: 6px 16px;
+            border-radius: 99px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(62, 166, 255, 0.2);
+            display: inline-block;
+            margin-bottom: 24px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 8vw, 72px);
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero-btns {
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .btn-large {
+            padding: 16px 40px;
+            font-size: 18px;
+        }
+
+        /* --- Features --- */
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .section-title p {
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .features {
+            padding: 100px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            cursor: default;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            background: var(--bg-card-hover);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(62, 166, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            color: var(--accent);
+            font-size: 24px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* --- How it Works --- */
+        .how-it-works {
+            padding: 100px 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 40px;
+            margin: 0 24px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-num {
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* --- Verdict Demo --- */
+        .demo-section {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .verdict-mockup {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .verdict-badge {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .verdict-low { background: rgba(74, 222, 128, 0.1); color: var(--success); border-color: rgba(74, 222, 128, 0.2); }
+        .verdict-medium { background: rgba(251, 191, 36, 0.1); color: var(--warning); border-color: rgba(251, 191, 36, 0.2); }
+        .verdict-high { background: rgba(248, 113, 113, 0.1); color: var(--danger); border-color: rgba(248, 113, 113, 0.2); }
+
+        /* --- Provider Section --- */
+        .providers {
+            padding: 80px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .provider-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+            opacity: 0.6;
+        }
+
+        .provider-item {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 80px 0 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-logo {
+            margin-bottom: 24px;
+            opacity: 0.8;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Mobile Responsive --- */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 48px; }
+            .how-it-works { margin: 0; border-radius: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <nav>
+        <div class="container nav-content">
+            <a href="#" class="logo">
+                <svg class="logo-img" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="128" height="128" rx="28" fill="#161b22"/>
+                    <circle cx="56" cy="52" r="36" stroke="#00e5bc" stroke-width="10"/>
+                    <path d="M82 78L106 102" stroke="#00e5bc" stroke-width="12" stroke-linecap="round"/>
+                    <circle cx="56" cy="52" r="22" fill="#ff4444"/>
+                    <path d="M50 42L68 52L50 62V42Z" fill="white"/>
+                </svg>
+                ClueTube
+            </a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How it Works</a>
+                <a href="https://github.com/jimde/cluetube-extension" target="_blank">GitHub</a>
+                <a href="#" class="btn-download">Install Extension</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="badge">🔥 New Version 4.1.0 Out Now</div>
+                <h1>Unlock the Clues in every<br>YouTube Video.</h1>
+                <p>Stop wasting time on clickbait. ClueTube uses AI to analyse transcripts and give you the core insights before you even click play.</p>
+                <div class="hero-btns">
+                    <a href="#" class="btn-download btn-large">Add to Chrome — It's Free</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Master Your Watch Time</h2>
+                    <p>Powerful AI insights built directly into your YouTube browsing experience.</p>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3>AI-Powered Analysis</h3>
+                        <p>Instantly extract the core message of any video. Supports Gemini 2.0, Claude 3, and GPT-4o.</p>
+                    </div>
+                    
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📌</div>
+                        <h3>Key Takeaways</h3>
+                        <p>Get timestamped bullet points linking directly to the most important moments in the video.</p>
+                    </div>
+                    
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Smart Caching</h3>
+                        <p>Analysis results are cached for 24 hours, ensuring instant loading for popular videos.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Privacy First</h3>
+                        <p>Your API keys are stored locally in your browser. No data is sent to our servers.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it Works -->
+        <section class="how-it-works" id="how-it-works">
+            <div class="container">
+                <div class="section-title">
+                    <h2>How It Works</h2>
+                    <p>Get set up in seconds and start browsing smarter.</p>
+                </div>
+                
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <h3>Install</h3>
+                        <p>Load the unpacked extension in Developer Mode or from the Web Store.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <h3>API Key</h3>
+                        <p>Enter your Gemini, Claude, or OpenAI key once in the settings.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <h3>Browse</h3>
+                        <p>Hover over any thumbnail or open a video to see instant AI insights.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Providers -->
+        <section class="providers">
+            <div class="container">
+                <p style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;">Supports Leading AI Models</p>
+                <div class="provider-list">
+                    <div class="provider-item">Gemini</div>
+                    <div class="provider-item">Claude</div>
+                    <div class="provider-item">GPT-4</div>
+                    <div class="provider-item">Qwen</div>
+                    <div class="provider-item">OpenRouter</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="logo footer-logo">
+                <svg class="logo-img" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.6">
+                    <rect width="128" height="128" rx="28" fill="#161b22"/>
+                    <circle cx="56" cy="52" r="36" stroke="#00e5bc" stroke-width="10"/>
+                    <path d="M82 78L106 102" stroke="#00e5bc" stroke-width="12" stroke-linecap="round"/>
+                </svg>
+                ClueTube
+            </div>
+            
+            <div class="footer-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How it Works</a>
+                <a href="https://github.com/jimde/cluetube-extension" target="_blank">GitHub</a>
+                <a href="chrome://extensions" target="_blank">Settings</a>
+            </div>
+            
+            <p class="copyright">© 2026 ClueTube. AI-generated analysis for educational purposes.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
