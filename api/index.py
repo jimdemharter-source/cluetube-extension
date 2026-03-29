@@ -12,18 +12,18 @@ import requests
 app = Flask(__name__)
 CORS(app)  # Allows Chrome Extension to talk to this server
 
-# Try to find cookies.txt in multiple locations
-POSSIBLE_COOKIE_PATHS = [
-    os.path.join(os.getcwd(), "cookies.txt"),
-    os.path.join(os.path.dirname(__file__), "cookies.txt"),
-    os.path.join(os.path.dirname(__file__), "..", "cookies.txt")
-]
+# Try to find cookies.txt in multiple locations defensively
+def find_cookies():
+    search_locations = ["cookies.txt", "api/cookies.txt", "../cookies.txt"]
+    for loc in search_locations:
+        try:
+            if os.path.exists(loc):
+                return os.path.abspath(loc)
+        except:
+            continue
+    return None
 
-COOKIES_FILE = None
-for p in POSSIBLE_COOKIE_PATHS:
-    if os.path.exists(p):
-        COOKIES_FILE = p
-        break
+COOKIES_FILE = find_cookies()
 
 def create_session_with_cookies():
     """Create a requests session with cookies if available."""
@@ -48,9 +48,15 @@ def create_session_with_cookies():
 
 def _fetch_transcript_data(video_id, use_cookies=True):
     """Core transcript fetching logic. Returns (transcript_data, language, is_generated) or raises."""
+    api = None
     if use_cookies and COOKIES_FILE:
-        session = create_session_with_cookies()
-        api = YouTubeTranscriptApi(http_client=session)
+        try:
+            session = create_session_with_cookies()
+            api = YouTubeTranscriptApi(http_client=session)
+        except Exception as e:
+            # If cookies fail, try without cookies as a fallback
+            print(f"Fallback: Cookie session creation failed: {e}")
+            api = YouTubeTranscriptApi()
     else:
         api = YouTubeTranscriptApi()
     
