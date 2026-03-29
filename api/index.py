@@ -119,7 +119,7 @@ def get_transcript():
             transcript_data = data
             lang_info = f"{lang} ({'auto-generated' if is_gen else 'manual'})"
         except Exception as cookie_err:
-            if os.path.exists(COOKIES_FILE):
+            if COOKIES_FILE and os.path.exists(COOKIES_FILE):
                 print(f"[!] Cookie-based fetch failed ({type(cookie_err).__name__}), retrying without cookies...")
                 data, lang, is_gen = _fetch_transcript_data(video_id, use_cookies=False)
                 transcript_data = data
