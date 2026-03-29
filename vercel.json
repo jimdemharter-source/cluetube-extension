@@ -9,7 +9,11 @@
       "use": "@vercel/static"
     },
     {
-      "src": "cluetube-extension.zip",
+      "src": "cluetube-v4.1.1.zip",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "cluetube-v4.1.2.zip",
       "use": "@vercel/static"
     }
   ],
